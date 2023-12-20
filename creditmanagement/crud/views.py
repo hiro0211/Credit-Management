@@ -20,7 +20,7 @@ class TopView(TemplateView):
 
 class SubjectListView(LoginRequiredMixin, ListView):
   model = Subject
-  paginate_by = 8
+  paginate_by = 24
 
   def get_context_data(self, *args, **kwargs):
     context = super().get_context_data(*args, **kwargs)
