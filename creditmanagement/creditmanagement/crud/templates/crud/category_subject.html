@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}単位管理.com{% endblock %}
+{% block content %}
+  {% if object_list %}
+    <h1 style="margin-left: 1rem; margin-bottom: 1rem;">{{ object_list.0.category }}</h1>
+  {% endif %}
+    <button class="btn btn-success" style="margin-right: 5rem; margin-left: 1rem; margin-bottom: 1rem;" type="button" onclick="location.href='{% url 'new' %}'">新規登録</button>
+
+    <button class="btn btn-outline-primary" style="margin-left: 1rem; margin-bottom: 1rem;" onclick="location.href='{% url 'list' %}'">戻る</button>
+
+    <div class="container">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
+        {% for subject in object_list %}
+        <div class="col-lg-3 col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{ subject.name }}</h5>
+              <h6 class="card-subtitle mb-2 text-secondary">{{ subject.category }}</h6>
+                <ul class="list-group  list-group-horizontal">
+                  <li class="list-group-item list-group-item-primary"><span class="fw-bolder">{{ subject.credit }}</span>単位</li>
+                  <li class="list-group-item"><span class="fw-bolder">{{ subject.score }}</span>点</li>
+                </ul>
+                <button class="btn btn-outline-info w-100" style="margin-top: 10px;" onclick="location.href='{% url 'edit' pk=subject.pk %}'">編集</button>
+                <button class="btn btn-outline-danger w-100" style="margin-top: 10px;" onclick="location.href='{% url 'delete' pk=subject.pk %}'">削除</button>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <button class="btn btn-primary" style="margin-left: 1rem; margin-top: 1rem;" onclick="location.href='{% url 'list' %}'">戻る</button>
+
+  {% endblock %}
