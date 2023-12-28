@@ -25,6 +25,7 @@ class ParentCategory(models.Model):
   parent = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
   required_credit = models.FloatField(null=True, blank=False)
   
+
 """
 class Student(models.Model):
   name = models.CharField(max_length=100)

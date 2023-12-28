@@ -14,6 +14,12 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
 from .forms import SignUpForm
 from django.db.models import Sum
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+from selenium.webdriver.common.action_chains import ActionChains
 
 class TopView(TemplateView):
   template_name= "top.html"
@@ -27,10 +33,71 @@ class SubjectListView(LoginRequiredMixin, ListView):
 
     context["categories"] = Category.objects.all()
     return context
+  
+  def get_queryset(self):
+    query = self.request.GET.get('query')
+
+    if query:
+      subject_list = Subject.objects.filter(
+            name__icontains=query)
+    else:
+      subject_list = Subject.objects.all()
+    return subject_list
 
 class SubjectCreateView(LoginRequiredMixin, CreateView):
   model = Subject
   fields = '__all__'
+
+class LoadDataFromSite(generic.ForrView):
+    form_class = SiteAuthDataForm
+    def form_valid(self, form):
+        id = form.cleaned_data('id')
+        password = form.cleaned_data('password')
+        # test.pyの内容をこの下に書く
+        chrome_driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+
+        #chrome_options = webdriver.ChromeOptions()
+        #chrome_options.add_argument("--no-sandbox")
+        #chrome_options.add_argument("--disable-dev-shm-usage")
+
+        # Chromeドライバーを起動
+        #chrome_driver = webdriver.Chrome(chrome_options=chrome_options)
+
+        chrome_driver.get("https://unipa.itp.kindai.ac.jp/up/faces/login/Com00501A.jsp")
+
+        time.sleep(1)
+
+        mail = chrome_driver.find_element(By.ID, 'form1:htmlUserId') 
+        password = chrome_driver.find_element(By.ID, 'form1:htmlPassword')
+
+        mail.clear()
+        password.clear()
+
+        mail.send_keys(id)
+        password.send_keys(password)
+
+        #mail.submit()
+        button = chrome_driver.find_element(By.ID, 'form1:login')
+        button.click()
+
+        #chrome_driver.save_screenshot('screenshot.png')
+        target_element = chrome_driver.find_element(By.ID, 'menuc3')
+        actions = ActionChains(chrome_driver)
+        actions.move_to_element(target_element).perform()
+
+        time.sleep(2)
+        grade = chrome_driver.find_element(By.ID, 'menuimg3-1')
+        grade.click()
+
+        time.sleep(2)
+        ave = chrome_driver.find_element(By.ID, 'form1:htmlAveTsusan').text
+        print(ave)
+        #chrome_driver.quit()
+
+
+
+
+
 
 class SubjectUpdateView(LoginRequiredMixin, UpdateView):
   model = Subject
