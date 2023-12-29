@@ -25,7 +25,7 @@ mail.clear()
 password.clear()
 
 mail.send_keys("2011530136k")
-password.send_keys("Yuudai01Arimura")
+password.send_keys("Twks0104Hiroaki")
 
 #mail.submit()
 button = chrome_driver.find_element(By.ID, 'form1:login')
@@ -41,6 +41,7 @@ grade = chrome_driver.find_element(By.ID, 'menuimg3-1')
 grade.click()
 
 time.sleep(2)
-ave = chrome_driver.find_element(By.ID, 'form1:htmlAveTsusan').text
-print(ave)
+subject = chrome_driver.find_element(By.CLASS_NAME, 'form1:htmlAveTsusan').text
+
+
 #chrome_driver.quit()

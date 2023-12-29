@@ -12,7 +12,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
-from .forms import SignUpForm
+from .forms import SignUpForm, SiteAuthDataForm
 from django.db.models import Sum
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -51,7 +51,7 @@ class SubjectCreateView(LoginRequiredMixin, CreateView):
 class LoadDataFromSite(generic.ForrView):
     form_class = SiteAuthDataForm
     def form_valid(self, form):
-        id = form.cleaned_data('id')
+        user_id = form.cleaned_data('user_id')
         password = form.cleaned_data('password')
         # test.pyの内容をこの下に書く
         chrome_driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
@@ -73,7 +73,7 @@ class LoadDataFromSite(generic.ForrView):
         mail.clear()
         password.clear()
 
-        mail.send_keys(id)
+        mail.send_keys(user_id)
         password.send_keys(password)
 
         #mail.submit()
