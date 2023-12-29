@@ -20,6 +20,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
 from selenium.webdriver.common.action_chains import ActionChains
+from django.views import generic
 
 class TopView(TemplateView):
   template_name= "top.html"
@@ -93,11 +94,6 @@ class LoadDataFromSite(generic.ForrView):
         ave = chrome_driver.find_element(By.ID, 'form1:htmlAveTsusan').text
         print(ave)
         #chrome_driver.quit()
-
-
-
-
-
 
 class SubjectUpdateView(LoginRequiredMixin, UpdateView):
   model = Subject
