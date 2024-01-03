@@ -49,11 +49,12 @@ class SubjectCreateView(LoginRequiredMixin, CreateView):
   model = Subject
   fields = '__all__'
 
-class LoadDataFromSite(generic.ForrView):
+class LoadDataFromSite(generic.FormView):
+    template_name= "crud/unipa_register.html"
     form_class = SiteAuthDataForm
     def form_valid(self, form):
-        user_id = form.cleaned_data('user_id')
-        password = form.cleaned_data('password')
+        user_id = form.cleaned_data['user_id']
+        password_text = form.cleaned_data['password']
         # test.pyの内容をこの下に書く
         chrome_driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
 
@@ -75,7 +76,7 @@ class LoadDataFromSite(generic.ForrView):
         password.clear()
 
         mail.send_keys(user_id)
-        password.send_keys(password)
+        password.send_keys(password_text)
 
         #mail.submit()
         button = chrome_driver.find_element(By.ID, 'form1:login')
@@ -91,8 +92,11 @@ class LoadDataFromSite(generic.ForrView):
         grade.click()
 
         time.sleep(2)
-        ave = chrome_driver.find_element(By.ID, 'form1:htmlAveTsusan').text
-        print(ave)
+        subject_element = chrome_driver.find_element(By.CLASS_NAME, 'tdkamokuList')
+        subject = subject_element.text
+
+        print(subject)
+        return render(self.request, 'total.html', {'subject': subject})
         #chrome_driver.quit()
 
 class SubjectUpdateView(LoginRequiredMixin, UpdateView):

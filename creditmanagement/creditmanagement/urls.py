@@ -32,5 +32,5 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(), name="login"),
     path('logout/', views.LogoutView.as_view(), name="logout"),
     path('total/', calculate_total, name="total"),
-    path('unipa_register/', views.LoadDataFromSite, name="unipa-register"),
+    path('unipa_register/', views.LoadDataFromSite.as_view(), name="unipa_register"),
 ]
