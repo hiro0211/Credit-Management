@@ -94,9 +94,12 @@ class LoadDataFromSite(generic.FormView):
         time.sleep(2)
         subject_element = chrome_driver.find_element(By.CLASS_NAME, 'tdkamokuList')
         subject = subject_element.text
+        
+        #credit_element = chrome_driver.find_element(By.CLASS_NAME, 'tdKyoshokuinNameList')
+        #credit = credit_element.text
 
         print(subject)
-        return render(self.request, 'total.html', {'subject': subject})
+        return render(self.request, 'total.html', {'subbject': subject})
         #chrome_driver.quit()
 
 class SubjectUpdateView(LoginRequiredMixin, UpdateView):
@@ -144,30 +147,30 @@ class SignUpView(CreateView):
   
 def calculate_total(request):
     total_credit = Subject.objects.aggregate(Sum('credit'))['credit__sum']
-    filtered_kyoutu = Subject.objects.filter(category_id = 4)
+    filtered_kyoutu = Subject.objects.filter(category_id = 1)
     kyoutu = filtered_kyoutu.aggregate(Sum('credit'))['credit__sum']
     rest_kyoutu = 16 - kyoutu
 
-    filtered_first = Subject.objects.filter(category_id = 5)
+    filtered_first = Subject.objects.filter(category_id = 2)
     first_language = filtered_first.aggregate(Sum('credit'))['credit__sum']
     rest_fisrt = 14 - first_language
 
-    filtered_second = Subject.objects.filter(category_id = 6)
+    filtered_second = Subject.objects.filter(category_id = 3)
     second_language = filtered_second.aggregate(Sum('credit'))['credit__sum']
 
-    filtered_gakubu = Subject.objects.filter(category_id = 2)
+    filtered_gakubu = Subject.objects.filter(category_id = 4)
     gakubu_subject = filtered_gakubu.aggregate(Sum('credit'))['credit__sum']
     rest_gakubu = 14 - gakubu_subject
 
-    filtered_department = Subject.objects.filter(category_id = 3)
+    filtered_department = Subject.objects.filter(category_id = 5)
     department_subject = filtered_department.aggregate(Sum('credit'))['credit__sum']
     rest_department = 28 - department_subject 
 
-    filtered_information = Subject.objects.filter(category_id = 1)
+    filtered_information = Subject.objects.filter(category_id = 7)
     information_subject = filtered_information.aggregate(Sum('credit'))['credit__sum']
     rest_infomation = 8 - information_subject
 
-    filterd_field = Subject.objects.filter(category_id = 7)
+    filterd_field = Subject.objects.filter(category_id = 6)
     field_subject = filterd_field.aggregate(Sum('credit'))['credit__sum']
 
     specialize_subject = (gakubu_subject or 0) + (department_subject or 0)+ (field_subject or 0) + (information_subject or 0)
