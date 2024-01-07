@@ -12,12 +12,14 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item h5">卒業まであと合計 <span class="fw-bolder">{{ rest_credit }}</span>単位</li>
                         <li class="list-group-item">共通教養科目あと <span class="fw-bolder">{% if rest_kyoutu > 0 %}{{ rest_kyoutu }}{% else %}0{% endif %}</span>単位</li>
-                        <li class="list-group-item">外国語科目あと {% if rest_foreign > 0 %}{{ rest_foreign }}{% else %}0{% endif %} 単位</li>
-                        <li class="list-group-item">第一外国語科目あと {% if rest_first > 0 %}{{ rest_first }}{% else %}0{% endif %} 単位</li>
-                        <li class="list-group-item h3">専門科目あと{{ rest_specialize }}単位</li>
-                        <li class="list-group-item">情報専門科目、あと {% if rest_information > 0 %}{{ rest_information }}{% else %}0{% endif %} 単位</li>
-                        <li class="list-group-item">学部共通科目、あと {% if rest_gakubu > 0 %}{{ rest_gakubu }}{% else %}0{% endif %} 単位</li>
-                        <li class="list-group-item">学科共通科目、あと {% if rest_department > 0 %}{{ rest_department }}{% else %}0{% endif %} 単位</li>
+                        <li class="list-group-item">外国語科目あと <span class="fw-bolder">{% if rest_foreign > 0 %}{{ rest_foreign }}{% else %}0{% endif %}</span> 単位</li>
+                        <li class="list-group-item">第一外国語科目あと <span class="fw-bolder">{% if rest_first > 0 %}{{ rest_first }}{% else %}0{% endif %}</span> 単位</li>
+                        <li class="list-group-item h3">専門科目あと <span class="fw-bolder">{{ rest_specialize }}</span> 単位</li>
+                        <li class="list-group-item">情報専門科目、あと <span class="fw-bolder">{% if rest_information > 0 %}{{ rest_information }}{% else %}0{% endif %}</span> 単位</li>
+                        <li class="list-group-item">学部共通科目、あと <span class="fw-bolder">{% if rest_gakubu > 0 %}{{ rest_gakubu }}{% else %}0{% endif %}</span> 単位</li>
+                        <li class="list-group-item">学科共通科目、あと <span class="fw-bolder">{% if rest_department > 0 %}{{ rest_department }}{% else %}0{% endif %}</span> 単位</li>
+                        <li class="list-group-item">{{ subject }}</li>
+                        <li class="list-group-item">{{ credit }}</li>
                     </ul>
                 </div>
             </div>

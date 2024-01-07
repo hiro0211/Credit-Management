@@ -3,7 +3,7 @@ from django.db.models.query import QuerySet
 from django.forms.models import BaseModelForm
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView,DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Subject, Category
@@ -42,7 +42,7 @@ class SubjectListView(LoginRequiredMixin, ListView):
       subject_list = Subject.objects.filter(
             name__icontains=query)
     else:
-      subject_list = Subject.objects.all()
+      subject_list = Subject.objects.filter(user=self.request.user)
     return subject_list
 
 class SubjectCreateView(LoginRequiredMixin, CreateView):
@@ -54,7 +54,7 @@ class LoadDataFromSite(generic.FormView):
     form_class = SiteAuthDataForm
     def form_valid(self, form):
         user_id = form.cleaned_data['user_id']
-        password = form.cleaned_data['password']
+        password_text = form.cleaned_data['password']
         # test.pyの内容をこの下に書く
         chrome_driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
 
@@ -66,7 +66,6 @@ class LoadDataFromSite(generic.FormView):
         #chrome_driver = webdriver.Chrome(chrome_options=chrome_options)
 
         chrome_driver.get("https://unipa.itp.kindai.ac.jp/up/faces/login/Com00501A.jsp")
-
         time.sleep(1)
 
         mail = chrome_driver.find_element(By.ID, 'form1:htmlUserId') 
@@ -76,7 +75,7 @@ class LoadDataFromSite(generic.FormView):
         password.clear()
 
         mail.send_keys(user_id)
-        password.send_keys(password)
+        password.send_keys(password_text)
 
         #mail.submit()
         button = chrome_driver.find_element(By.ID, 'form1:login')
@@ -87,15 +86,44 @@ class LoadDataFromSite(generic.FormView):
         actions = ActionChains(chrome_driver)
         actions.move_to_element(target_element).perform()
 
-        time.sleep(2)
         grade = chrome_driver.find_element(By.ID, 'menuimg3-1')
+        time.sleep(2)
         grade.click()
 
-        time.sleep(2)
-        ave_element = chrome_driver.find_element(By.ID, 'form1:htmlAveTsusan')
-        ave = ave_element.text
+        time.sleep(5)
+        #1年生前期、後期の成績情報を取得
+        first_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[10:]
+        second_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[12:]
 
-        print(ave)
+        total_semester = first_semester + second_semester
+
+        Subject.objects.filter(user=self.request.user).delete()
+        category = '' 
+        for tr in total_semester.find_elements(By.CSS_SELECTOR, 'table>tbody>tr')[1:]:
+          try:
+            kamoku = tr.find_element(By.CSS_SELECTOR, 'td.kamokuList').text    
+            credit = tr.find_element(By.CSS_SELECTOR, 'td.tdTaniList').text
+            score = tr.find_element(By.CSS_SELECTOR, 'td.tdSotenList').text
+          except Exception:
+            pass
+          else:
+            if credit:
+              category_ = category
+              if category_ == '外国語科目':
+                if '英語' in kamoku or 'イングリッシュ' in kamoku:
+                  category_ = '第一外国語科目'
+                else:
+                  category_ = '第二外国語科目'
+                print(category, kamoku)
+              category_model , _ = Category.objects.get_or_create(name=category_)
+              Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
+            
+            else:
+              category = kamoku
+        #credit_element = chrome_driver.find_element(By.CLASS_NAME, 'tdKyoshokuinNameList')
+        #credit = credit_element.text
+
+        return redirect("list")
         #chrome_driver.quit()
 
 class SubjectUpdateView(LoginRequiredMixin, UpdateView):
@@ -143,30 +171,30 @@ class SignUpView(CreateView):
   
 def calculate_total(request):
     total_credit = Subject.objects.aggregate(Sum('credit'))['credit__sum']
-    filtered_kyoutu = Subject.objects.filter(category_id = 4)
+    filtered_kyoutu = Subject.objects.filter(category_id = 1)
     kyoutu = filtered_kyoutu.aggregate(Sum('credit'))['credit__sum']
     rest_kyoutu = 16 - kyoutu
 
-    filtered_first = Subject.objects.filter(category_id = 5)
+    filtered_first = Subject.objects.filter(category_id = 2)
     first_language = filtered_first.aggregate(Sum('credit'))['credit__sum']
     rest_fisrt = 14 - first_language
 
-    filtered_second = Subject.objects.filter(category_id = 6)
+    filtered_second = Subject.objects.filter(category_id = 3)
     second_language = filtered_second.aggregate(Sum('credit'))['credit__sum']
 
-    filtered_gakubu = Subject.objects.filter(category_id = 2)
+    filtered_gakubu = Subject.objects.filter(category_id = 4)
     gakubu_subject = filtered_gakubu.aggregate(Sum('credit'))['credit__sum']
     rest_gakubu = 14 - gakubu_subject
 
-    filtered_department = Subject.objects.filter(category_id = 3)
+    filtered_department = Subject.objects.filter(category_id = 5)
     department_subject = filtered_department.aggregate(Sum('credit'))['credit__sum']
     rest_department = 28 - department_subject 
 
-    filtered_information = Subject.objects.filter(category_id = 1)
+    filtered_information = Subject.objects.filter(category_id = 10)
     information_subject = filtered_information.aggregate(Sum('credit'))['credit__sum']
     rest_infomation = 8 - information_subject
 
-    filterd_field = Subject.objects.filter(category_id = 7)
+    filterd_field = Subject.objects.filter(category_id = 6)
     field_subject = filterd_field.aggregate(Sum('credit'))['credit__sum']
 
     specialize_subject = (gakubu_subject or 0) + (department_subject or 0)+ (field_subject or 0) + (information_subject or 0)
