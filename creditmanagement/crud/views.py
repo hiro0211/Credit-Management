@@ -91,15 +91,18 @@ class LoadDataFromSite(generic.FormView):
         grade = chrome_driver.find_element(By.ID, 'menuimg3-1')
         grade.click()
 
-        time.sleep(2)
-        subject_element = chrome_driver.find_element(By.CLASS_NAME, 'tdkamokuList')
+        time.sleep(10)
+        first_semester = chrome_driver.find_element(By.ID, 'singleTableArea')
+        print(first_semester.text)
+
+        subject_element = first_semester.find_element(By.CLASS_NAME, 'tdTaniList')
+        print(subject_element)
         subject = subject_element.text
         
         #credit_element = chrome_driver.find_element(By.CLASS_NAME, 'tdKyoshokuinNameList')
         #credit = credit_element.text
-
-        print(subject)
-        return render(self.request, 'total.html', {'subbject': subject})
+        
+        return render(self.request, 'total.html', {'subject': subject})
         #chrome_driver.quit()
 
 class SubjectUpdateView(LoginRequiredMixin, UpdateView):
