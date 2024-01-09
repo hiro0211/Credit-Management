@@ -107,11 +107,14 @@ class LoadDataFromSite(generic.FormView):
 
         time.sleep(5)
         #1年生前期、後期の成績情報を取得
-        first_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[10]
+        first_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[10:]
+        second_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[12:]
 
+        total_semester = first_semester + second_semester
+        
         Subject.objects.filter(user=self.request.user).delete()
         category = ''
-        for tr in first_semester.find_elements(By.CSS_SELECTOR, 'table>tbody>tr')[1:]:
+        for tr in total_semester.find_elements(By.CSS_SELECTOR, 'table>tbody>tr')[1:]:
           try:
             kamoku = tr.find_element(By.CSS_SELECTOR, 'td.kamokuList').text    
             credit = tr.find_element(By.CSS_SELECTOR, 'td.tdTaniList').text
