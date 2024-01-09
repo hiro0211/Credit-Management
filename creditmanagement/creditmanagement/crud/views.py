@@ -92,7 +92,7 @@ class LoadDataFromSite(generic.FormView):
 
         time.sleep(5)
         #1年生前期、後期の成績情報を取得
-        first_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[10:]
+        first_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[10]
         second_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[12:]
 
         total_semester = first_semester + second_semester
