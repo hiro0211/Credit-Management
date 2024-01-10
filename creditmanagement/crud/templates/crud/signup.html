@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load bootstrap %}
+
 {% block title %}ユーザ登録{% endblock %}
 
 {% block content %}
@@ -9,17 +11,12 @@
       <h1>ユーザ登録</h1>
       <form method="POST" class="mt-4" enctype="multipart/form-data">
         {% csrf_token %}
+        {{ form|bootstrap }}
         {{ form.non_field_errors }}
         {% for field in form %}
-        <div class="m-auto">
           {{ field.label }}
-        </div>
-        <div class="m-auto">
           {{ field }}
-        </div>
-        <div class="m-auto">
           {{ field.errors }}
-        </div>
         {% endfor %}
         <button class="m-5 btn-block mt-3" type="submit">登録</button>
       </form>

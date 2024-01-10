@@ -9,4 +9,5 @@ class SignUpForm(UserCreationForm):
 
 class SiteAuthDataForm(forms.Form):
   user_id = forms.CharField(label="ユーザID")
-  password = forms.CharField(label="パスワード")
+  password = forms.CharField(label="パスワード", widget=forms.PasswordInput(), min_length=8)
+
