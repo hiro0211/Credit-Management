@@ -5,7 +5,7 @@
   <div class="row py-lg-5">
     <div class="col-lg-8 col-md-8 mx-auto">
       <h1 class="fw-light">単位管理.com</h1>
-      <p class="lead text-muted">単位を管理しましょう！</p>
+      <p class="lead text-muted">卒業までに必要な単位が一目で分かる！</p>
       <p class="pt-2 fs-5">
         {% for category in categories %}
         <span class="badge rounded-pill bg-light">
@@ -29,7 +29,7 @@
 {% block title %}単位管理.com{% endblock %}
 {% block content %}
 
-<button class="btn btn-success" style="margin-right: 5rem; margin-left: 1rem; margin-bottom: 1rem;" type="button" onclick="location.href='{% url 'new' %}'">履修した科目を登録</button>
+<button class="btn btn-success" style="margin-right: 5rem; margin-left: 1rem; margin-bottom: 1rem;" type="button" onclick="location.href='{% url 'unipa_register' %}'">履修した科目を登録</button>
 
 {# 前へ #}
 {% if page_obj.has_previous %}

@@ -33,4 +33,6 @@ urlpatterns = [
     path('logout/', views.LogoutView.as_view(), name="logout"),
     path('total/', calculate_total, name="total"),
     path('unipa_register/', views.LoadDataFromSite.as_view(), name="unipa_register"),
+    path('profile/<int:pk>/', views.Profile.as_view(), name='profile'),
+    path('profile/<int:pk>/update/', views.ProfileUpdate.as_view(),name='profile_update'),
 ]

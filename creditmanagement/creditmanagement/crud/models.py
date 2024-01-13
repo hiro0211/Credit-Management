@@ -11,8 +11,8 @@ class Category(models.Model):
 
 class Subject(models.Model):
   name = models.CharField(max_length=100, verbose_name="科目名") 
-  credit = models.FloatField(null=True, blank=False, verbose_name="単位数")
-  score = models.PositiveIntegerField(verbose_name="得点")
+  credit = models.FloatField(null=True, blank=False, verbose_name="単位数", default=2.0)
+  score = models.PositiveIntegerField(verbose_name="得点", default=70)
   category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, blank=True, null=True, verbose_name="科目カテゴリ")
   user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
 
