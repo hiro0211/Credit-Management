@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}削除{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            <h5 class="card-subtitle mb-4">{{ object }}を削除します。</h5>
+            <p class="card-text">本当に<span class="fw-bolder">{{ object }}</span>を削除してもよろしいですか？<br>削除された科目は元に戻せません。</p>
+            <div>
+              <button class="btn btn-outline-primary mr-2" onclick="location.href='{% url 'list' %}'">戻る</button>
+              <input type="submit" class="btn btn-danger" value="削除">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

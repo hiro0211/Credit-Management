@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block header %}
+<section class="py-5 text-center container">
+  <div class="row py-lg-5">
+    <div class="col-lg-8 col-md-8 mx-auto">
+      <h1 class="fw-light">単位管理.com</h1>
+      <p class="lead text-muted">卒業までに必要な単位が一目で分かる！</p>
+      <p class="pt-2 fs-5">
+        {% for category in categories %}
+        <span class="badge rounded-pill bg-light">
+          <a class="text-dark" style="text-decoration: none;" href="{% url 'category-subject-list' category.name %}">{{category}}</a>
+        </span>
+        {% endfor %}
+      </p>
+    </div>
+  </div>
+  <form class="form-inline d-flex">
+    <div class="col-md-2 col-sm-6" style="margin-left: 1rem;">
+      <input name="query" value="{{ request.GET.query }}" class="form-control mr-sm-2" style="margin-bottom: 1rem;" type="text" placeholder="科目を検索" aria-label="Search">
+    </div>
+    <div class="col-md-1 col-sm-6">
+      <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">検索する</button>
+    </div>
+  </form>
+</section>
+{% endblock header %}
+
+{% block title %}単位管理.com{% endblock %}
+{% block content %}
+
+<button class="btn btn-success" style="margin-right: 5rem; margin-left: 1rem; margin-bottom: 1rem;" type="button" onclick="location.href='{% url 'unipa_register' %}'">履修した科目を登録</button>
+
+{# 前へ #}
+{% if page_obj.has_previous %}
+<button class="btn btn-outline-success" type="button" style="margin-bottom: 1rem;"onclick="location.href='?page={{ page_obj.previous_page_number }}'">前へ</button>
+{% endif %}
+
+{# 次へ #}
+{% if page_obj.has_next %}
+<button class="btn btn-outline-success" type="button" style="margin-bottom: 1rem;"onclick="location.href='?page={{ page_obj.next_page_number }}'">次へ</button>
+<button class="btn btn-outline-success" type="button" style="margin-bottom: 1rem;"onclick="location.href='?page={{ page_obj.paginator.num_pages }}'">最後へ &raquo;</button>
+{% endif %}
+
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
+    {% for subject in object_list %}
+    <div class="col-lg-3 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{ subject.name }}</h5>
+          <h6 class="card-subtitle mb-2 text-secondary">{{ subject.category }}</h6>
+            <ul class="list-group  list-group-horizontal">
+              <li class="list-group-item list-group-item-primary"><span class="fw-bolder">{{ subject.credit }}</span>単位</li>
+              <li class="list-group-item"><span class="fw-bolder">{{ subject.score }}</span>点</li>
+            </ul>
+            <button class="btn btn-outline-info w-100" style="margin-top: 10px;" onclick="location.href='{% url 'edit' pk=subject.pk %}'">編集</button>
+            <button class="btn btn-outline-danger w-100" style="margin-top: 10px;" onclick="location.href='{% url 'delete' pk=subject.pk %}'">削除</button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<br>
+
+    {# ページの表示 #}
+    {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} ページ<br>
+
+    {# 前へ #}
+    {% if page_obj.has_previous %}
+    <button class="btn btn-outline-success" type="button" style="margin-bottom: 1rem; "onclick="location.href='?page={{ 1 }}'">&laquo; 先頭</button>
+    <button class="btn btn-outline-success" type="button" style="margin-bottom: 1rem; "onclick="location.href='?page={{ page_obj.previous_page_number }}'">前へ</button>
+    {% endif %}
+
+    {# 次へ #}
+    {% if page_obj.has_next %}
+    <button class="btn btn-outline-success" type="button" style="margin-bottom: 1rem;"onclick="location.href='?page={{ page_obj.next_page_number }}'">次へ</button>
+    <button class="btn btn-outline-success" type="button" style="margin-bottom: 1rem;"onclick="location.href='?page={{ page_obj.paginator.num_pages }}'">最後へ &raquo;</button>
+    {% endif %}
+
+  {% endblock %}
