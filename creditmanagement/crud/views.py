@@ -3,16 +3,19 @@ from django.db.models.query import QuerySet
 from django.forms.models import BaseModelForm
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import TemplateView, ListView,DetailView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.shortcuts import render, get_object_or_404, redirect, resolve_url
+from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
+from django.views import generic
 from .models import Subject, Category
 from django.urls import reverse_lazy
-from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import (LoginView, LogoutView, PasswordContextMixin, PasswordChangeDoneView,
+                                      PasswordChangeView, PasswordResetView, PasswordResetDoneView,
+                                      PasswordResetConfirmView, PasswordResetCompleteView)
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
-from .forms import SignUpForm, SiteAuthDataForm
+from .forms import SignUpForm, SiteAuthDataForm, LoginForm, SignUpForm2
 from django.db.models import Sum
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -20,10 +23,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
 from selenium.webdriver.common.action_chains import ActionChains
-from django.views import generic
 
 class TopView(TemplateView):
   template_name= "top.html"
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context["form_name"] = "top"
+    return context
 
 class SubjectListView(LoginRequiredMixin, ListView):
   model = Subject
@@ -90,7 +97,6 @@ class LoadDataFromSite(generic.FormView):
         time.sleep(2)
         grade.click()
 
-        time.sleep(5)
         #1年生前期、後期の成績情報を取得
         fresh_first_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[10]
 
@@ -107,11 +113,11 @@ class LoadDataFromSite(generic.FormView):
             if credit:
               category_ = category
               if category_ == '外国語科目':
-                if '英語' in kamoku or 'イングリッシュ' in kamoku:
+                if '英語' in kamoku or 'イングリッシュ' in kamoku or 'ＴＯＥＩＣ' in kamoku:
                   category_ = '第一外国語科目'
                 else:
                   category_ = '第二外国語科目'
-                print(category, kamoku)
+                #print(category, kamoku)
               category_model , _ = Category.objects.get_or_create(name=category_)
               Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
             
@@ -133,11 +139,11 @@ class LoadDataFromSite(generic.FormView):
             if credit:
               category_ = category
               if category_ == '外国語科目':
-                if '英語' in kamoku or 'イングリッシュ' in kamoku:
+                if '英語' in kamoku or 'イングリッシュ' in kamoku or 'ＴＯＥＩＣ' in kamoku:
                   category_ = '第一外国語科目'
                 else:
                   category_ = '第二外国語科目'
-                print(category, kamoku)
+                #print(category, kamoku)
               category_model , _ = Category.objects.get_or_create(name=category_)
               Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
             
@@ -161,11 +167,11 @@ class LoadDataFromSite(generic.FormView):
             if credit:
               category_ = category
               if category_ == '外国語科目':
-                if '英語' in kamoku or 'イングリッシュ' in kamoku:
+                if '英語' in kamoku or 'イングリッシュ' in kamoku or 'ＴＯＥＩＣ' in kamoku:
                   category_ = '第一外国語科目'
                 else:
                   category_ = '第二外国語科目'
-                print(category, kamoku)
+                #print(category, kamoku)
               category_model , _ = Category.objects.get_or_create(name=category_)
               Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
             
@@ -187,11 +193,11 @@ class LoadDataFromSite(generic.FormView):
             if credit:
               category_ = category
               if category_ == '外国語科目':
-                if '英語' in kamoku or 'イングリッシュ' in kamoku:
+                if 'イングリッシュ' in kamoku or "英語" in kamoku or 'ＴＯＥＩＣ' in kamoku:
                   category_ = '第一外国語科目'
                 else:
                   category_ = '第二外国語科目'
-                print(category, kamoku)
+                #print(category, kamoku)
               category_model , _ = Category.objects.get_or_create(name=category_)
               Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
             
@@ -213,11 +219,11 @@ class LoadDataFromSite(generic.FormView):
             if credit:
               category_ = category
               if category_ == '外国語科目':
-                if '英語' in kamoku or 'イングリッシュ' in kamoku:
+                if '英語' in kamoku or 'イングリッシュ' in kamoku or 'ＴＯＥＩＣ' in kamoku:
                   category_ = '第一外国語科目'
                 else:
                   category_ = '第二外国語科目'
-                print(category, kamoku)
+                #print(category, kamoku)
               category_model , _ = Category.objects.get_or_create(name=category_)
               Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
             
@@ -239,11 +245,11 @@ class LoadDataFromSite(generic.FormView):
             if credit:
               category_ = category
               if category_ == '外国語科目':
-                if '英語' in kamoku or 'イングリッシュ' in kamoku:
+                if '英語' in kamoku or 'イングリッシュ' in kamoku or 'ＴＯＥＩＣ' in kamoku:
                   category_ = '第一外国語科目'
                 else:
                   category_ = '第二外国語科目'
-                print(category, kamoku)
+                #print(category, kamoku)
               category_model , _ = Category.objects.get_or_create(name=category_)
               Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
             
@@ -265,7 +271,7 @@ class LoadDataFromSite(generic.FormView):
             if credit:
               category_ = category
               if category_ == '外国語科目':
-                if '英語' in kamoku or 'イングリッシュ' in kamoku:
+                if '英語' in kamoku or 'イングリッシュ' in kamoku or 'ＴＯＥＩＣ' in kamoku:
                   category_ = '第一外国語科目'
                 else:
                   category_ = '第二外国語科目'
@@ -275,10 +281,13 @@ class LoadDataFromSite(generic.FormView):
             
             else:
               category = kamoku
+        
 
         return redirect("list")
         #chrome_driver.quit()
-
+      
+        
+        
 class SubjectUpdateView(LoginRequiredMixin, UpdateView):
   model = Subject
   fields = '__all__'
@@ -304,7 +313,7 @@ class CategorySubjectListView(ListView):
     return super().get_queryset().filter(category=category)
 
 class LoginView(LoginView):
-  form_class = AuthenticationForm
+  form_class = LoginForm
   template_name ='login.html'
   success_url = reverse_lazy('list')
 
@@ -316,12 +325,56 @@ class SignUpView(CreateView):
   template_name = "crud/signup.html"
   success_url = reverse_lazy('list')
 
-  def form_valid(self, form):
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['form2'] = SignUpForm2()
+    return context
+
+  def post(self, request, *args, **kwargs):
+    self.object = None
+    form = self.get_form()
+    form2 = SignUpForm2(self.request.POST)
+    if form.is_valid() and form2.is_valid():
+      return self.form_valid(form, form2)
+    else:
+      return self.form_invalid(form)
+    
+  def form_valid(self, form, form2):
     user = form.save()
     login(self.request, user)
-    self.object = user 
+    self.object = user
+    
+    student = form2.save(commit=False)
+    student.user = user
+    student.save()
+
     return HttpResponseRedirect(self.get_success_url())
-  
+
+class PasswordChange(LoginRequiredMixin, PasswordChangeView):
+  success_url = reverse_lazy('crud:password_change_done')
+  template_name = 'crud/password_change.html'
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context["form_name"] = "password_change"
+    return context
+
+class PasswordReset(PasswordResetView):
+  subject_template_name = 'crud/mail_template/reset/subject.txt'
+  email_template_name = 'crud/mail_template/reset/message.txt'
+  template_name = 'crud/password_reset_form.html'
+  success_url = reverse_lazy('crud:password_reset_done')
+
+class PasswordChangeDone(LoginRequiredMixin, PasswordChangeDoneView):
+  template_name = 'crud/password_reset_done.html'
+
+class PasswordResetConfirm(PasswordResetCompleteView):
+  success_url = reverse_lazy('crud:password_reset_complete')
+  template_name = 'crud/password_reset_confirm.html'
+
+class PasswordResetComplete(PasswordResetCompleteView):
+  template_name = 'crud/password_reset_complete.html'
+
 def calculate_total(request):
     total_credit = Subject.objects.aggregate(Sum('credit'))['credit__sum']
     filtered_kyoutu = Subject.objects.filter(category_id = 1)
@@ -343,6 +396,9 @@ def calculate_total(request):
     department_subject = filtered_department.aggregate(Sum('credit'))['credit__sum']
     rest_department = 28 - (department_subject or 0)
 
+    filtered_remedical = Subject.objects.filter(category_id = 32)
+    remedical_subject = filtered_remedical.aggregate(Sum('credit'))['credit__sum']
+
     filtered_information = Subject.objects.filter(category_id = 10)
     information_subject = filtered_information.aggregate(Sum('credit'))['credit__sum']
     rest_infomation = 8 - (information_subject or 0)
@@ -358,9 +414,11 @@ def calculate_total(request):
 
     # kyoutu = Subject.objects.filter(category_id = 4)
     rest_credit = 128 - (total_credit or 0)
-    return render(request, 'total.html', {'total_credit': total_credit, 'rest_credit': rest_credit, 'rest_kyoutu': rest_kyoutu, 'rest_first': rest_fisrt, 
-                  'rest_gakubu': rest_gakubu, 'rest_department': rest_department, 'rest_information': rest_infomation, 'rest_specialize': rest_specialize,
-                  'rest_foreign': rest_foreign})
+    return render(request, 'total.html', {'kyoutu':kyoutu, 'first_language': first_language, 'second_language': second_language, 'gakubu_subject': gakubu_subject, 
+                                          'department_subject': department_subject, 'information_subject':information_subject, 'field_subject':field_subject, 'remedical_subject': remedical_subject,
+                                          'specialize_subject':specialize_subject, 'foreign_language': foreign_language, 'total_credit': total_credit, 'rest_credit': rest_credit, 
+                                          'rest_kyoutu': rest_kyoutu, 'rest_first': rest_fisrt, 'rest_gakubu': rest_gakubu, 'rest_department': rest_department, 'rest_information': rest_infomation, 
+                                          'rest_specialize': rest_specialize, 'rest_foreign': rest_foreign})
 
 
 """
