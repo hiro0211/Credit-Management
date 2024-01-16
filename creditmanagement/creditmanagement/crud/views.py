@@ -4,15 +4,18 @@ from django.forms.models import BaseModelForm
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect, resolve_url
-from django.views.generic import TemplateView, ListView,DetailView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
+from django.views import generic
 from .models import Subject, Category
 from django.urls import reverse_lazy
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import (LoginView, LogoutView, PasswordContextMixin, PasswordChangeDoneView,
+                                      PasswordChangeView, PasswordResetView, PasswordResetDoneView,
+                                      PasswordResetConfirmView, PasswordResetCompleteView)
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login
-from .forms import SignUpForm, SiteAuthDataForm, AcountsUpdateForm
+from django.contrib.auth import login, logout
+from .forms import SignUpForm, SiteAuthDataForm, LoginForm, SignUpForm2
 from django.db.models import Sum
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -20,10 +23,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
 from selenium.webdriver.common.action_chains import ActionChains
-from django.views import generic
 
 class TopView(TemplateView):
   template_name= "top.html"
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context["form_name"] = "top"
+    return context
 
 class SubjectListView(LoginRequiredMixin, ListView):
   model = Subject
@@ -90,7 +97,6 @@ class LoadDataFromSite(generic.FormView):
         time.sleep(2)
         grade.click()
 
-        time.sleep(3)
         #1年生前期、後期の成績情報を取得
         fresh_first_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[10]
 
@@ -111,12 +117,13 @@ class LoadDataFromSite(generic.FormView):
                   category_ = '第一外国語科目'
                 else:
                   category_ = '第二外国語科目'
-                print(category, kamoku)
+                #print(category, kamoku)
               category_model , _ = Category.objects.get_or_create(name=category_)
               Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
             
             else:
               category = kamoku
+
         fresh_second_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[12]
 
         Subject.objects.filter(user=self.request.user).delete
@@ -136,7 +143,7 @@ class LoadDataFromSite(generic.FormView):
                   category_ = '第一外国語科目'
                 else:
                   category_ = '第二外国語科目'
-                print(category, kamoku)
+                #print(category, kamoku)
               category_model , _ = Category.objects.get_or_create(name=category_)
               Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
             
@@ -164,7 +171,7 @@ class LoadDataFromSite(generic.FormView):
                   category_ = '第一外国語科目'
                 else:
                   category_ = '第二外国語科目'
-                print(category, kamoku)
+                #print(category, kamoku)
               category_model , _ = Category.objects.get_or_create(name=category_)
               Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
             
@@ -190,7 +197,7 @@ class LoadDataFromSite(generic.FormView):
                   category_ = '第一外国語科目'
                 else:
                   category_ = '第二外国語科目'
-                print(category, kamoku)
+                #print(category, kamoku)
               category_model , _ = Category.objects.get_or_create(name=category_)
               Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
             
@@ -216,13 +223,13 @@ class LoadDataFromSite(generic.FormView):
                   category_ = '第一外国語科目'
                 else:
                   category_ = '第二外国語科目'
-                print(category, kamoku)
+                #print(category, kamoku)
               category_model , _ = Category.objects.get_or_create(name=category_)
               Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
             
             else:
               category = kamoku
-
+        
         junior_second_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[20]
 
         Subject.objects.filter(user=self.request.user).delete
@@ -242,7 +249,7 @@ class LoadDataFromSite(generic.FormView):
                   category_ = '第一外国語科目'
                 else:
                   category_ = '第二外国語科目'
-                print(category, kamoku)
+                #print(category, kamoku)
               category_model , _ = Category.objects.get_or_create(name=category_)
               Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
             
@@ -275,9 +282,12 @@ class LoadDataFromSite(generic.FormView):
             else:
               category = kamoku
         
+
         return redirect("list")
         #chrome_driver.quit()
 
+
+        
 class SubjectUpdateView(LoginRequiredMixin, UpdateView):
   model = Subject
   fields = '__all__'
@@ -303,23 +313,74 @@ class CategorySubjectListView(ListView):
     return super().get_queryset().filter(category=category)
 
 class LoginView(LoginView):
-  form_class = AuthenticationForm
+  form_class = LoginForm
   template_name ='login.html'
   success_url = reverse_lazy('list')
 
 class LogoutView(LoginRequiredMixin, LogoutView):
   template_name = 'top.html'
 
+  def dispatch(self, request, *args, **kwargs):
+    logout(request)
+    return super().dispatch(request, *args, **kwargs)
+  
+  def get(self, request, *args, **kwargs):
+    return HttpResponseRedirect(reverse_lazy('top'))
+
 class SignUpView(CreateView):
   form_class = SignUpForm
   template_name = "crud/signup.html"
   success_url = reverse_lazy('list')
 
-  def form_valid(self, form):
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['form2'] = SignUpForm2()
+    return context
+
+  def post(self, request, *args, **kwargs):
+    self.object = None
+    form = self.get_form()
+    form2 = SignUpForm2(self.request.POST)
+    if form.is_valid() and form2.is_valid():
+      return self.form_valid(form, form2)
+    else:
+      return self.form_invalid(form)
+    
+  def form_valid(self, form, form2):
     user = form.save()
     login(self.request, user)
-    self.object = user 
+    self.object = user
+    
+    student = form2.save(commit=False)
+    student.user = user
+    student.save()
+
     return HttpResponseRedirect(self.get_success_url())
+
+class PasswordChange(LoginRequiredMixin, PasswordChangeView):
+  success_url = reverse_lazy('crud:password_change_done')
+  template_name = 'crud/password_change.html'
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context["form_name"] = "password_change"
+    return context
+
+class PasswordReset(PasswordResetView):
+  subject_template_name = 'crud/mail_template/reset/subject.txt'
+  email_template_name = 'crud/mail_template/reset/message.txt'
+  template_name = 'crud/password_reset_form.html'
+  success_url = reverse_lazy('crud:password_reset_done')
+
+class PasswordChangeDone(LoginRequiredMixin, PasswordChangeDoneView):
+  template_name = 'crud/password_reset_done.html'
+
+class PasswordResetConfirm(PasswordResetCompleteView):
+  success_url = reverse_lazy('crud:password_reset_complete')
+  template_name = 'crud/password_reset_confirm.html'
+
+class PasswordResetComplete(PasswordResetCompleteView):
+  template_name = 'crud/password_reset_complete.html'
 
 def calculate_total(request):
     total_credit = Subject.objects.aggregate(Sum('credit'))['credit__sum']

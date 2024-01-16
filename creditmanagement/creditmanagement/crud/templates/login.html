@@ -12,8 +12,11 @@
         {% csrf_token %}
         {{ form|bootstrap }}
         <button type="submit" class="btn btn-primary btn-block mt-3">ログイン</button>
+        <a href='{% url 'password_reset' %}' class="d-block mt-3">パスワードを忘れた場合</a>
+        <a href='{% url 'signup' %}' class="d-block mt-3">新規登録</a>
       </form>
     </div>
   </div>
 </div>
+
 {% endblock %}

@@ -1,6 +1,22 @@
 from django.db import models
 from django.urls import reverse 
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser, Group, Permission
+
+class Student(models.Model):
+  grade = models.CharField(
+    '学年と学期', max_length=5, 
+    choices=(('1年前期', '1年前期'),('1年後期', '1年後期'),('2年前期', '2年前期'), ('2年後期', '2年後期'),
+              ('3年前期', '3年前期'), ('3年後期', '3年後期'), ('4年前期', '4年前期'), ('4年後期', '4年後期'))
+  )
+  department = models.CharField(
+    '学科', max_length=5,
+    choices=(('経済学部', '経済学部'), ('経営学部', '経営学部'), 
+            ('法学部', '法学部')),
+    default='経営学部'
+  )
+  user= models.OneToOneField(settings.AUTH_USER_MODEL, 
+on_delete=models.CASCADE, blank=True, null=True)
 
 class Category(models.Model):
   name = models.CharField(max_length=200, verbose_name="科目カテゴリ")
@@ -20,13 +36,7 @@ class Subject(models.Model):
     return self.name
   
   def get_absolute_url(self):
-    return reverse('list')
-  
-class ParentCategory(models.Model):
-  name = models.CharField(max_length=200)
-  parent = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
-  required_credit = models.FloatField(null=True, blank=False)
-  
+    return reverse('list') 
 
 """
 class Student(models.Model):
