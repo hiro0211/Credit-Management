@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404, redirect, resolve_url
 from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.views import generic
-from .models import Subject, Category
+from .models import Subject, Category, Student
 from django.urls import reverse_lazy
 from django.contrib.auth.views import (LoginView, LogoutView, PasswordContextMixin, PasswordChangeDoneView,
                                       PasswordChangeView, PasswordResetView, PasswordResetDoneView,
@@ -47,7 +47,7 @@ class SubjectListView(LoginRequiredMixin, ListView):
 
     if query:
       subject_list = Subject.objects.filter(
-            name__icontains=query)
+            name__icontains=query, user=self.request.user)
     else:
       subject_list = Subject.objects.filter(user=self.request.user)
     return subject_list
@@ -59,6 +59,162 @@ class SubjectCreateView(LoginRequiredMixin, CreateView):
 class LoadDataFromSite(generic.FormView):
     template_name= "crud/unipa_register.html"
     form_class = SiteAuthDataForm
+
+    def get(self, request, *args, **kwargs):
+        if hasattr(request.user, 'student'):
+          #学年を取得する
+          user_grade = request.user.student.grade
+          user_department = request.user.student.department
+          #1年生前期の定積情報を取得
+          if user_grade =="1年後期" and user_department == "経済学部":
+            
+            def form_valid(self, form):
+              user_id = form.cleaned_data['user_id']
+              password_text = form.cleaned_data['password']
+        
+              chrome_driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+
+              chrome_driver.get("https://unipa.itp.kindai.ac.jp/up/faces/login/Com00501A.jsp")
+              time.sleep(1)
+
+              mail = chrome_driver.find_element(By.ID, 'form1:htmlUserId') 
+              password = chrome_driver.find_element(By.ID, 'form1:htmlPassword')
+
+              mail.clear()
+              password.clear()
+
+              mail.send_keys(user_id)
+              password.send_keys(password_text)
+
+              button = chrome_driver.find_element(By.ID, 'form1:login')
+              button.click()
+
+              #chrome_driver.save_screenshot('screenshot.png')
+              target_element = chrome_driver.find_element(By.ID, 'menuc3')
+              actions = ActionChains(chrome_driver)
+              actions.move_to_element(target_element).perform()
+
+              grade = chrome_driver.find_element(By.ID, 'menuimg3-1')
+              time.sleep(2)
+              grade.click()
+
+              #1年生前期の成績情報を取得
+              fresh_first_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[9]
+
+              Subject.objects.filter(user=self.request.user).delete
+              category = '' 
+              for tr in fresh_first_semester.find_elements(By.CSS_SELECTOR, 'table>tbody>tr')[1:]:
+                try:
+                  kamoku = tr.find_element(By.CSS_SELECTOR, 'td.kamokuList').text    
+                  credit = tr.find_element(By.CSS_SELECTOR, 'td.tdTaniList').text
+                  score = tr.find_element(By.CSS_SELECTOR, 'td.tdSotenList').text
+                except Exception:
+                  pass
+                else:
+                  if credit:
+                    category_ = category
+                    if category_ == '外国語科目':
+                      if '英語' in kamoku or 'イングリッシュ' in kamoku or 'ＴＯＥＩＣ' in kamoku:
+                        category_ = '第一外国語科目'
+                      else:
+                        category_ = '第二外国語科目'
+                      #print(category, kamoku)
+                    category_model , _ = Category.objects.get_or_create(name=category_)
+                    Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
+                  
+                  else:
+                    category = kamoku
+
+              return redirect("list")
+          
+          elif user_grade =="2年前期" and user_department == "経済学部":
+            def form_valid(self, form):
+              user_id = form.cleaned_data['user_id']
+              password_text = form.cleaned_data['password']
+        
+              chrome_driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+
+              chrome_driver.get("https://unipa.itp.kindai.ac.jp/up/faces/login/Com00501A.jsp")
+              time.sleep(1)
+
+              mail = chrome_driver.find_element(By.ID, 'form1:htmlUserId') 
+              password = chrome_driver.find_element(By.ID, 'form1:htmlPassword')
+
+              mail.clear()
+              password.clear()
+
+              mail.send_keys(user_id)
+              password.send_keys(password_text)
+
+              button = chrome_driver.find_element(By.ID, 'form1:login')
+              button.click()
+
+              #chrome_driver.save_screenshot('screenshot.png')
+              target_element = chrome_driver.find_element(By.ID, 'menuc3')
+              actions = ActionChains(chrome_driver)
+              actions.move_to_element(target_element).perform()
+
+              grade = chrome_driver.find_element(By.ID, 'menuimg3-1')
+              time.sleep(2)
+              grade.click()
+
+              #1年生前期の成績情報を取得
+              fresh_first_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[9]
+
+              Subject.objects.filter(user=self.request.user).delete
+              category = '' 
+              for tr in fresh_first_semester.find_elements(By.CSS_SELECTOR, 'table>tbody>tr')[1:]:
+                try:
+                  kamoku = tr.find_element(By.CSS_SELECTOR, 'td.kamokuList').text    
+                  credit = tr.find_element(By.CSS_SELECTOR, 'td.tdTaniList').text
+                  score = tr.find_element(By.CSS_SELECTOR, 'td.tdSotenList').text
+                except Exception:
+                  pass
+                else:
+                  if credit:
+                    category_ = category
+                    if category_ == '外国語科目':
+                      if '英語' in kamoku or 'イングリッシュ' in kamoku or 'ＴＯＥＩＣ' in kamoku:
+                        category_ = '第一外国語科目'
+                      else:
+                        category_ = '第二外国語科目'
+                      #print(category, kamoku)
+                    category_model , _ = Category.objects.get_or_create(name=category_)
+                    Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
+                  
+                  else:
+                    category = kamoku
+
+              fresh_second_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[12]
+
+              Subject.objects.filter(user=self.request.user).delete
+              category = '' 
+              for tr in fresh_second_semester.find_elements(By.CSS_SELECTOR, 'table>tbody>tr')[1:]:
+                try:
+                  kamoku = tr.find_element(By.CSS_SELECTOR, 'td.kamokuList').text    
+                  credit = tr.find_element(By.CSS_SELECTOR, 'td.tdTaniList').text
+                  score = tr.find_element(By.CSS_SELECTOR, 'td.tdSotenList').text
+                except Exception:
+                  pass
+                else:
+                  if credit:
+                    category_ = category
+                    if category_ == '外国語科目':
+                      if '英語' in kamoku or 'イングリッシュ' in kamoku or 'ＴＯＥＩＣ' in kamoku:
+                        category_ = '第一外国語科目'
+                      else:
+                        category_ = '第二外国語科目'
+                      #print(category, kamoku)
+                    category_model , _ = Category.objects.get_or_create(name=category_)
+                    Subject.objects.create(category=category_model, name=kamoku, credit=credit, score=score, user=self.request.user)    
+                  
+                  else:
+                    category = kamoku
+
+              return redirect("list")
+
+
+    """
     def form_valid(self, form):
         user_id = form.cleaned_data['user_id']
         password_text = form.cleaned_data['password']
@@ -97,7 +253,7 @@ class LoadDataFromSite(generic.FormView):
         time.sleep(2)
         grade.click()
 
-        #1年生前期、後期の成績情報を取得
+        #1年生前期の成績情報を取得
         fresh_first_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[10]
 
         Subject.objects.filter(user=self.request.user).delete
@@ -124,6 +280,7 @@ class LoadDataFromSite(generic.FormView):
             else:
               category = kamoku
 
+        #1年生後期の成績情報を取得
         fresh_second_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[12]
 
         Subject.objects.filter(user=self.request.user).delete
@@ -152,6 +309,7 @@ class LoadDataFromSite(generic.FormView):
         #credit_element = chrome_driver.find_element(By.CLASS_NAME, 'tdKyoshokuinNameList')
         #credit = credit_element.text
 
+        # 2年生前期の成績情報を取得
         sopho_first_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[14]
 
         Subject.objects.filter(user=self.request.user).delete
@@ -178,6 +336,7 @@ class LoadDataFromSite(generic.FormView):
             else:
               category = kamoku
         
+        #2年生後期の成績情報を取得
         sopho_second_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[16]
 
         Subject.objects.filter(user=self.request.user).delete
@@ -204,6 +363,7 @@ class LoadDataFromSite(generic.FormView):
             else:
               category = kamoku
         
+        #3年生前期の成績情報を取得
         junior_first_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[18]
 
         Subject.objects.filter(user=self.request.user).delete
@@ -230,6 +390,7 @@ class LoadDataFromSite(generic.FormView):
             else:
               category = kamoku
         
+        #3年生後期の成績情報を取得
         junior_second_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[20]
 
         Subject.objects.filter(user=self.request.user).delete
@@ -256,6 +417,7 @@ class LoadDataFromSite(generic.FormView):
             else:
               category = kamoku
         
+        #4年生前期の成績情報を取得
         senior_first_semester = chrome_driver.find_elements(By.CSS_SELECTOR, 'table.outline>tbody>tr')[22]
 
         Subject.objects.filter(user=self.request.user).delete
@@ -285,9 +447,20 @@ class LoadDataFromSite(generic.FormView):
 
         return redirect("list")
         #chrome_driver.quit()
+        #chrome_driver.quit()
+    """
 
+"""
+    def form_valid(self, form):
+      object = form.save(commit=False)
+      object.user_name = self.request.user
+      object.save()
+      return super().form_valid(form)
 
-        
+    def get_success_url(self):
+      return resolve_url('list', kwargs={'pk': self.object.id})  
+"""
+    
 class SubjectUpdateView(LoginRequiredMixin, UpdateView):
   model = Subject
   fields = '__all__'
@@ -324,7 +497,7 @@ class LogoutView(LoginRequiredMixin, LogoutView):
     logout(request)
     return super().dispatch(request, *args, **kwargs)
   
-  def get(self, request, *args, **kwargs):
+  def post(self, request, *args, **kwargs):
     return HttpResponseRedirect(reverse_lazy('top'))
 
 class SignUpView(CreateView):
@@ -383,50 +556,54 @@ class PasswordResetComplete(PasswordResetCompleteView):
   template_name = 'crud/password_reset_complete.html'
 
 def calculate_total(request):
-    total_credit = Subject.objects.aggregate(Sum('credit'))['credit__sum']
-    filtered_kyoutu = Subject.objects.filter(category_id = 1)
+    filtered_kyoutu = Subject.objects.filter(category_id = 1, user=request.user)
     kyoutu = filtered_kyoutu.aggregate(Sum('credit'))['credit__sum']
     rest_kyoutu = 16 - (kyoutu or 0)
 
-    filtered_first = Subject.objects.filter(category_id = 2)
+    filtered_first = Subject.objects.filter(category_id = 2, user=request.user)
     first_language = filtered_first.aggregate(Sum('credit'))['credit__sum']
     rest_fisrt = 14 - (first_language or 0)
 
-    filtered_second = Subject.objects.filter(category_id = 3)
+    filtered_second = Subject.objects.filter(category_id = 3, user=request.user)
     second_language = filtered_second.aggregate(Sum('credit'))['credit__sum']
 
-    filtered_gakubu = Subject.objects.filter(category_id = 4)
+    filtered_gakubu = Subject.objects.filter(category_id = 4, user=request.user)
     gakubu_subject = filtered_gakubu.aggregate(Sum('credit'))['credit__sum']
     rest_gakubu = 14 - (gakubu_subject or 0)
 
-    filtered_department = Subject.objects.filter(category_id = 5)
+    filtered_department = Subject.objects.filter(category_id = 5, user=request.user)
     department_subject = filtered_department.aggregate(Sum('credit'))['credit__sum']
     rest_department = 28 - (department_subject or 0)
 
-    filtered_remedical = Subject.objects.filter(category_id = 32)
+    filtered_remedical = Subject.objects.filter(category_id = 32, user=request.user)
     remedical_subject = filtered_remedical.aggregate(Sum('credit'))['credit__sum']
 
-    filtered_information = Subject.objects.filter(category_id = 10)
+    filtered_information = Subject.objects.filter(category_id = 10,  user=request.user)
     information_subject = filtered_information.aggregate(Sum('credit'))['credit__sum']
     rest_infomation = 8 - (information_subject or 0)
 
-    filterd_field = Subject.objects.filter(category_id = 6)
+    filterd_field = Subject.objects.filter(category_id = 6, user=request.user)
     field_subject = filterd_field.aggregate(Sum('credit'))['credit__sum']
 
-    specialize_subject = (gakubu_subject or 0) + (department_subject or 0)+ (field_subject or 0) + (information_subject or 0)
+    filtered_free = Subject.objects.filter(category_id = 31, user=request.user)
+    free_subject = filtered_free.aggregate(Sum('credit'))['credit__sum']
+
+    specialize_subject = (gakubu_subject or 0) + (department_subject or 0)+ (field_subject or 0) + (information_subject or 0) + (remedical_subject or 0)
     rest_specialize = 92 - (specialize_subject or 0)
 
     foreign_language = (first_language or 0) + (second_language or 0)
     rest_foreign = 20 - (foreign_language or 0)
+    
+    total_credit = (kyoutu or 0) + (first_language or 0) + (second_language or 0) + (gakubu_subject or 0) + (department_subject or 0) + (information_subject or 0) + (field_subject or 0) + (remedical_subject or 0) 
+    #total_credit = all_credit - (free_subject or 0)
 
     # kyoutu = Subject.objects.filter(category_id = 4)
-    rest_credit = 128 - (total_credit or 0)
+    rest_credit = 128 - (total_credit or 0 )
     return render(request, 'total.html', {'kyoutu':kyoutu, 'first_language': first_language, 'second_language': second_language, 'gakubu_subject': gakubu_subject, 
                                           'department_subject': department_subject, 'information_subject':information_subject, 'field_subject':field_subject, 'remedical_subject': remedical_subject,
                                           'specialize_subject':specialize_subject, 'foreign_language': foreign_language, 'total_credit': total_credit, 'rest_credit': rest_credit, 
                                           'rest_kyoutu': rest_kyoutu, 'rest_first': rest_fisrt, 'rest_gakubu': rest_gakubu, 'rest_department': rest_department, 'rest_information': rest_infomation, 
-                                          'rest_specialize': rest_specialize, 'rest_foreign': rest_foreign})
-
+                                          'rest_specialize': rest_specialize, 'rest_foreign': rest_foreign, 'free_subject': free_subject})
 
 """
 def graduation_requirements(request):
