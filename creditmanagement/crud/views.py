@@ -62,15 +62,11 @@ class LoadDataFromSite(generic.FormView):
     def form_valid(self, form):
         user_id = form.cleaned_data['user_id']
         password_text = form.cleaned_data['password']
-        # test.pyの内容をこの下に書く
-        chrome_driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument('--headless')  # ヘッドレスモードを有効にする
 
-        #chrome_options = webdriver.ChromeOptions()
-        #chrome_options.add_argument("--no-sandbox")
-        #chrome_options.add_argument("--disable-dev-shm-usage")
-
-        # Chromeドライバーを起動
-        #chrome_driver = webdriver.Chrome(chrome_options=chrome_options)
+        # ChromeDriverにChromeOptionsを渡してwebdriverを初期化
+        chrome_driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
 
         chrome_driver.get("https://unipa.itp.kindai.ac.jp/up/faces/login/Com00501A.jsp")
         time.sleep(1)
