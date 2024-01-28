@@ -20,10 +20,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-f((6skmj(#9#bfhq5@t0^!$!l8)v@$7d#x_es^7(tbyb20j3w9'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 
 
 ALLOWED_HOSTS = []
 
@@ -78,10 +78,7 @@ WSGI_APPLICATION = 'creditmanagement.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'credit',
-        'USER': 'arimu',
-        'PASSWORD': 'Yuudai07Arimura'
+        '
     }
 }
 
