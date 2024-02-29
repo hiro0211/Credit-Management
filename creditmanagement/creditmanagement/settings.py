@@ -11,22 +11,35 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+DEBUG = True
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ''
+SECRET_KEY = 'django-insecure-f((6skmj(#9#bfhq5@t0^!$!l8)v@$7d#x_es^7(tbyb20j3w9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["46.51.238.131", "localhost", '127.0.0.1', 'unicredits.jp', 'www.unicredits.jp']
 
+SECURE_BROWSER_XSS_FILTER = True                                                                                                          
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+#HTTPSを介しているかチェックするためのヘッダー
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 
@@ -78,7 +91,12 @@ WSGI_APPLICATION = 'creditmanagement.wsgi.application'
 
 DATABASES = {
     'default': {
-        '
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'credit',
+    'USER': 'arimu',
+    'PASSWORD': 'Yuudai07Arimura'
+    #'HOST': 'database-1.cfgyao22qiwq.ap-northeast-1.rds.amazonaws.com',
+    #'PORT': '3306',
     }
 }
 
@@ -124,5 +142,16 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = "login"
+
 LOGIN_REDIRECT_URL = "list"
-LOGOUT_REDIRECT_URL = 'login'
+
+LOGOUT_REDIRECT_URL = 'top'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+DEFAULT_AUTO_EMAIL = 'arimurahiroaki40@gmail.com'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'arimurahiroaki40@gmail.com'
+EMAIL_HOST_PASSWORD = 'nfqg xapw vzpv lvos'

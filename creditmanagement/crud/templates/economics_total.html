@@ -1,0 +1,628 @@
+{% extends "base.html" %}
+
+{% block title %}単位取得状況{% endblock %}
+
+{% block content %}
+<p>・このページでは、卒業までに必要な単位数が一目で確認できます。<br>
+・卒業までに必要最低限の単位数とあなたの単位を比較して計算し、進級までの単位数も確認できます。</p>
+</p>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% if user.student.grade == '1年' or user.student.grade == '2年' or user.student.grade == '3年' %}
+                            <li class="list-group-item h4">進級まであと合計 <span class="fw-bolder">{% if rest_promotion > 0 %}{{ rest_promotion }}
+                                {% else %}0{% endif %}</span> 単位</li>
+                            
+                                {% if rest_promotion <= 0 %}
+                                <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                                aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: 100%;">達成!</div>
+                                </div>
+                                {% elif rest_promotion <= 10 %}
+                                <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                                aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: 90%;">あと {% if rest_promotion >= 0 %}{{ rest_promotion }}
+                                        {% else %}0{% endif %} 単位
+                                    </div>
+                                </div>
+                                {% elif rest_promotion <= 20 %}
+                                <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25"
+                                aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: 80%;">あと {% if rest_promotion >= 0 %}{{ rest_promotion }}
+                                        {% else %}0{% endif %} 単位
+                                    </div>
+                                </div>
+                                {% elif rest_promotion <= 30 %}
+                                <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25"
+                                aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: 70%;">あと {% if rest_promotion >= 0 %}{{ rest_promotion }}
+                                        {% else %}0{% endif %} 単位
+                                    </div>
+                                </div>
+                                {% elif rest_promotion <= 40 %}
+                                <div class="progress" role="progressbar" aria-label="Basic example" 
+                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: 60%;">あと {% if rest_promotion >= 0 %}{{ rest_promotion }}
+                                        {% else %}0{% endif %} 単位
+                                    </div>
+                                </div>
+                                {% elif rest_promotion <= 50 %}
+                                <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25"
+                                aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: 50%;">あと {% if rest_promotion >= 0 %}{{ rest_promotion }}
+                                        {% else %}0{% endif %} 単位
+                                    </div>
+                                </div>
+                                {% elif rest_promotion <= 60 %}
+                                <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                                aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: 40%;">あと {% if rest_promotion >= 0 %}{{ rest_promotion }}
+                                        {% else %}0{% endif %} 単位
+                                    </div>
+                                </div>
+                                {% elif rest_promotion <= 70 %}
+                                <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                                aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: 30%;">あと {% if rest_promotion >= 0 %}{{ rest_promotion }}
+                                        {% else %}0{% endif %} 単位
+                                    </div>
+                                </div>
+                                {% elif rest_promotion <= 80 %}
+                                <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                                aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: 20%;">あと {% if rest_promotion >= 0 %}{{ rest_promotion }}
+                                        {% else %}0{% endif %} 単位
+                                    </div>
+                                </div>
+                                {% elif rest_promotion <= 90 %}
+                                <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                                aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: 10%;">あと {% if rest_promotion >= 0 %}{{ rest_promotion }}
+                                        {% else %}0{% endif %} 単位
+                                    </div>
+                                </div>
+                                {% elif rest_promotion <= 100 %}
+                                <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25"
+                                aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: 0%;">あと{% if rest_promotion >= 0 %}{{ rest_promotion }}
+                                        {% else %}0{% endif %} 単位
+                                    </div>
+                                </div>
+                                {% endif %}
+                        {% endif %}
+
+                        {% if promotion_specialize %}
+                        <li class="list-group-item">進級まで専門科目</li>
+                            {% if promotion_specialize <= 0 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 100%;">達成!</div>
+                            </div>
+                            {% elif promotion_specialize <= 1 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 70%;">あと {% if promotion_specialize >= 0 %}{{ promotion_specialize }}{% else %}0{% endif %} 単位</div>
+                            </div>
+                            {% elif promotion_specialize <= 2 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 60%;">あと {% if promotion_specialize >= 0 %}{{ promotion_specialize }}{% else %}0{% endif %} 単位</div>
+                            </div>
+                            {% elif promotion_specialize <= 3 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 50%;">あと {% if promotion_specialize >= 0 %}{{ promotion_specialize }}{% else %}0{% endif %} 単位</div>
+                            </div>
+                            {% elif promotion_specialize <= 4 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 0%;">あと {% if promotion_specialize >= 0 %}{{ promotion_specialize }}{% else %}0{% endif %} 単位</div>
+                            </div>
+                            {% endif %}
+                        {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <p class="h3">卒業までの単位数</p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">共通教養科目あと <span class="fw-bolder">{% if rest_kyoutu > 0 %}{{ rest_kyoutu }}{% else %}0{% endif %}</span>単位</li>
+                        {% if rest_kyoutu <= 0 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 100%;">達成!</div>
+                        </div>
+                        {% elif rest_kyoutu <= 2 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 91%;">共通教養科目あと {% if rest_kyoutu > 0 %}{{ rest_kyoutu }}{% else %}0{% endif %}単位</div>
+                        </div>
+                        {% elif rest_kyoutu <= 4 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 78%;">共通教養科目あと {% if rest_kyoutu > 0 %}{{ rest_kyoutu }}{% else %}0{% endif %}単位</div>
+                        </div>
+                        {% elif rest_kyoutu <= 6 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 65%;">共通教養科目あと {% if rest_kyoutu > 0 %}{{ rest_kyoutu }}{% else %}0{% endif %}単位</div>
+                        </div>
+                        {% elif rest_kyoutu <= 8 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 52%;">共通教養科目あと {% if rest_kyoutu > 0 %}{{ rest_kyoutu }}{% else %}0{% endif %}単位</div>
+                        </div>
+                        {% elif rest_kyoutu <= 10 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 39%;">共通教養科目あと {% if rest_kyoutu > 0 %}{{ rest_kyoutu }}{% else %}0{% endif %}単位</div>
+                        </div>
+                        {% elif rest_kyoutu <= 12 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 26%;">共通教養科目あと {% if rest_kyoutu > 0 %}{{ rest_kyoutu }}{% else %}0{% endif %}単位</div>
+                        </div>
+                        {% elif rest_kyoutu <= 14 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 13%;">共通教養科目あと {% if rest_kyoutu > 0 %}{{ rest_kyoutu }}{% else %}0{% endif %}単位</div>
+                        </div>
+                        {% elif rest_kyoutu <= 16 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 0%;">共通教養科目あと {% if rest_kyoutu > 0 %}{{ rest_kyoutu }}{% else %}0{% endif %}単位</div>
+                        </div>
+                        {% endif %}
+                        
+                        <li class="list-group-item">外国語科目あと <span class="fw-bolder">{% if rest_foreign > 0 %}{{ rest_foreign }}{% else %}0{% endif %}</span> 単位</li>
+                            {% if rest_foreign <= 0 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 100%;">達成!</div>
+                            </div>
+                            {% elif rest_foreign  <= 2 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 90%;">あと {% if rest_foreign > 0 %}{{ rest_foreign }}{% else %}0{% endif %} 単位</div>
+                            </div>
+                            {% elif rest_foreign  <= 4 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 80%;">あと {% if rest_foreign > 0 %}{{ rest_foreign }}{% else %}0{% endif %} 単位</div>
+                            </div>
+                            {% elif rest_foreign  <= 6 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 70%;">あと {% if rest_foreign > 0 %}{{ rest_foreign }}{% else %}0{% endif %} 単位</div>
+                            </div>
+                            {% elif rest_foreign  <= 8 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 60%;">あと {% if rest_foreign > 0 %}{{ rest_foreign }}{% else %}0{% endif %} 単位</div>
+                            </div>
+                            {% elif rest_foreign  <= 10 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 50%;">あと {% if rest_foreign > 0 %}{{ rest_foreign }}{% else %}0{% endif %} 単位</div>
+                            </div>
+                            {% elif rest_foreign  <= 12 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 40%;">あと {% if rest_foreign > 0 %}{{ rest_foreign }}{% else %}0{% endif %} 単位</div>
+                            </div>
+                            {% elif rest_foreign  <= 14 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 30%;">あと {% if rest_foreign > 0 %}{{ rest_foreign }}{% else %}0{% endif %} 単位</div>
+                            </div>
+                            {% elif rest_foreign  <= 16 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 20%;">あと {% if rest_foreign > 0 %}{{ rest_foreign }}{% else %}0{% endif %} 単位</div>
+                            </div>
+                            {% elif rest_foreign  <= 18 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 10%;">あと {% if rest_foreign > 0 %}{{ rest_foreign }}{% else %}0{% endif %} 単位</div>
+                            </div>
+                            {% elif rest_foreign  <= 20 %}
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 0%;">あと {% if rest_foreign > 0 %}{{ rest_foreign }}{% else %}0{% endif %} 単位</div>
+                            </div>
+                            {% endif %}
+                        <li class="list-group-item tetx-left">第一外国語科目あと <span class="fw-bolder">{% if rest_first > 0 %}{{ rest_first }}{% else %}0{% endif %} </span> 単位</li>
+                        {% if rest_first <= 0 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 100%;">達成!</div>
+                        </div>
+                        {% elif rest_first  <= 2 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 90%;">あと {% if rest_first > 0 %}{{ rest_first }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_first  <= 4 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 75%;">あと {% if rest_first > 0 %}{{ rest_first }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_first  <= 6 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 60%;">あと {% if rest_first > 0 %}{{ rest_first }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_first  <= 8 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 45%;">あと {% if rest_first > 0 %}{{ rest_first }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_first  <= 10 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 30%;">あと {% if rest_first > 0 %}{{ rest_first }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_first  <= 12 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 15%;">あと {% if rest_first > 0 %}{{ rest_first }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_first  <= 14 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 0%;">あと {% if rest_first > 0 %}{{ rest_first }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% endif %}
+                        <li class="list-group-item h4">卒業まで専門科目あと <span class="fw-bolder">{% if rest_specialize > 0 %}{{ rest_specialize }}{% else %}0{% endif %}</span> 単位</li>
+                        {% if rest_specialize <= 0 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 100%;">達成!</div>
+                        </div>
+                        {% elif rest_specialize  <= 10 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 90%;"> あと{% if rest_specialize > 0 %}{{ rest_specialize }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_specialize  <= 15 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 85%;"> あと{% if rest_specialize > 0 %}{{ rest_specialize }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_specialize  <= 20 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 80%;"> あと{% if rest_specialize > 0 %}{{ rest_specialize }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_specialize  <= 30 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 85%;"> あと{% if rest_specialize > 0 %}{{ rest_specialize }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_specialize  <= 40 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 60%;"> あと{% if rest_specialize > 0 %}{{ rest_specialize }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_specialize  <= 50 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 50%;"> あと{% if rest_specialize > 0 %}{{ rest_specialize }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_specialize  <= 60 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 40%;"> あと{% if rest_specialize > 0 %}{{ rest_specialize }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_specialize  <= 70 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar " style="width: 30%;"> あと{% if rest_specialize > 0 %}{{ rest_specialize }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_specialize  <= 80 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 20%;"> あと{% if rest_specialize > 0 %}{{ rest_specialize }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_specialize  <= 90 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 10%;"> あと{% if rest_specialize > 0 %}{{ rest_specialize }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_specialize  <= 100 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 0%;"> あと{% if rest_specialize > 0 %}{{ rest_specialize }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% endif %}
+
+                        <li class="list-group-item">学科共通科目（情報専門科目）あと <span class="fw-bolder">{% if rest_information > 0 %}{{ rest_information }}
+                            {% else %}0{% endif %}</span> 単位</li>
+                        {% if rest_information <= 0 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 100%;">達成!</div>
+                        </div>
+                        {% elif rest_information  <= 1 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 90%;">あと {% if rest_information > 0 %}{{ rest_information }}
+                                {% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_information  <= 2 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 77%;">あと {% if rest_information > 0 %}{{ rest_information }}
+                                {% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_information  <= 3 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 64%;">あと {% if rest_information > 0 %}{{ rest_information }}
+                                {% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_information  <= 4 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 51%;">あと {% if rest_information > 0 %}{{ rest_information }}
+                                {% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_information  <= 5 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 39%;">あと {% if rest_information > 0 %}{{ rest_information }}
+                                {% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_information  <= 6 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 26%;">あと {% if rest_information > 0 %}{{ rest_information }}
+                                {% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_information  <= 7 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 13%;">あと {% if rest_information > 0 %}{{ rest_information }}
+                                {% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_information  <= 8 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 0%;">あと {% if rest_information > 0 %}{{ rest_information }}
+                                {% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% endif %}
+                        <li class="list-group-item">学部共通科目あと <span class="fw-bolder">{% if rest_gakubu > 0 %}{{ rest_gakubu }}
+                            {% else %}0{% endif %}</span> 単位</li>
+                        {% if rest_gakubu <= 0 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 100%;">達成!</div>
+                        </div>
+                        {% elif rest_gakubu  <= 2 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 80%;">あと{% if rest_gakubu > 0 %}{{ rest_gakubu }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_gakubu  <= 4 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 60%;">あと{% if rest_gakubu > 0 %}{{ rest_gakubu }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_gakubu  <= 6 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 50%;">あと{% if rest_gakubu > 0 %}{{ rest_gakubu }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_gakubu  <= 8 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 40%;">あと{% if rest_gakubu > 0 %}{{ rest_gakubu }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_gakubu  <= 10 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 30%;">あと{% if rest_gakubu > 0 %}{{ rest_gakubu }}
+                                {% else %}0{% endif %} 単位</div>
+                        </div>
+                        {% elif rest_gakubu  <= 12 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 20%;">あと{% if rest_gakubu > 0 %}{{ rest_gakubu }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_gakubu  <= 14 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 0%;">あと{% if rest_gakubu > 0 %}{{ rest_gakubu }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <li class="list-group-item">学科共通科目あと <span class="fw-bolder">{% if rest_department > 0 %}{{ rest_department }}
+                            {% else %}0{% endif %}</span> 単位
+                        </li>
+                        {% if rest_department <= 0 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 100%;">達成!</div>
+                        </div>
+                        {% elif rest_department <= 2 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 90%;">あと {% if rest_department > 0 %}{{ rest_department }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_department <= 4 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 90%;">あと {% if rest_department > 0 %}{{ rest_department }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_department <= 6 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 90%;">あと {% if rest_department > 0 %}{{ rest_department }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_department <= 8 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" 
+                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 90%;">あと {% if rest_department > 0 %}{{ rest_department }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_department  <= 10 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 85%;">あと {% if rest_department > 0 %}{{ rest_department }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_department  <= 12 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 80%;">あと {% if rest_department > 0 %}{{ rest_department }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_department  <= 14 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 85%;">あと {% if rest_department > 0 %}{{ rest_department }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_department <= 16 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 60%;">あと {% if rest_department > 0 %}{{ rest_department }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_department <= 18 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 50%;">あと {% if rest_department > 0 %}{{ rest_department }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_department <= 20 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 40%;">あと {% if rest_department > 0 %}{{ rest_department }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_department <= 22 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 30%;">あと {% if rest_department > 0 %}{{ rest_department }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_department <= 24 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 20%;">あと {% if rest_department > 0 %}{{ rest_department }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_department <= 26 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 10%;">あと {% if rest_department > 0 %}{{ rest_department }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% elif rest_department <= 28 %}
+                        <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 0%;">あと {% if rest_department > 0 %}{{ rest_department }}
+                                {% else %}0{% endif %} 単位
+                            </div>
+                        </div>
+                        {% endif %}
+                        <li class="list-group-item">残りの必須科目 <span class="fw-bolder">
+                            {% for kamoku in required_list %} {% if not kamoku in filtered_required %}
+                            {{ kamoku }} {% endif %} {% endfor %}</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">今まで取得した単位数</h2>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item h5">合計 {% if total_credit > 0 %}{{ total_credit }}
+                            {% else %}0{% endif %} 単位</li>
+                        <li class="list-group-item">共通教養科目 {% if kyoutu > 0 %}{{ kyoutu }}
+                            {% else %}0{% endif %} 単位</li>
+                        <li class="list-group-item h5">外国語科目 {% if foreign_language > 0 %}{{ foreign_language }}
+                            {% else %}0{% endif %} 単位</li>
+                        <li class="list-group-item">第一外国語科目 {% if first_language > 0 %}{{ first_language }}
+                            {% else %}0{% endif %} 単位</li>
+                        <li class="list-group-item">第二外国語科目 {% if second_language > 0 %}{{ second_language }}
+                            {% else %}0{% endif %} 単位</li>
+                        <li class="list-group-item h5">専門科目 {% if specialize_subject > 0 %}{{ specialize_subject }}
+                            {% else %}0{% endif %} 単位</li>
+                        <li class="list-group-item">取得済み必須科目 <span class="fw-bolder">{% for kamoku in filtered_required %} {{ kamoku }} 
+                            {% endfor %}</span></li>
+                        <li class="list-group-item">学部共通科目 {% if gakubu_subject > 0 %}{{ gakubu_subject }}
+                            {% else %}0{% endif %} 単位</li>
+                        <li class="list-group-item">学科共通科目 {% if department_subject > 0 %}{{ department_subject }}
+                            {% else %}0{% endif %} 単位</li>
+                        <li class="list-group-item">学科共通科目（情報専門科目） {% if information_subject > 0 %}{{ information_subject }}
+                            {% else %}0{% endif %} 単位</li>
+                        <li class="list-group-item">分野科目{% if field_subject > 0 %}{{ field_subject }}
+                            {% else %}0{% endif %} 単位</li>
+                        <li class="list-group-item">学科共通科目(リメディアル) {% if remedial_subject > 0 %}{{ remedial_subject }}
+                            {% else %}0{% endif %} 単位</li>
+                        <li class="list-group-item">自由科目 {% if free_subject > 0 %}{{ free_subject }}
+                            {% else %}0{% endif %} 単位</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+<!-- <div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                        <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            共通教養科目 <span class="fw-bolder">{% if kyoutu > 0 %}{{ kyoutu }}{% else %}0{% endif %} </span>単位
+                            </button>
+                        </h2>
+                        </div>
+                        <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                外国語科目 <span class="fw-bolder">{% if foreign_language > 0 %}{{ foreign_language }}{% else %}0{% endif %} </span>単位
+                            </button>
+                        </h2>
+                        <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">第一外国語(英語) {% if first_language > 0 %}{{ first_language }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">第二外国語 {% if second_language > 0 %}{{ second_language }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        </div>
+                        <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                                専門科目 <span class="fw-bolder">{% if specialize_subject > 0 %}{{ specialize_subject }}{% else %}0{% endif %} </span>単位
+                            </button>
+                        </h2>
+                        <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">学部共通科目 {% if gakubu_subject > 0 %} {{ gakubu_subject }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">学科共通科目 {% if department_subject > 0 %} {{ department_subject }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">学科共通科目（情報専門科目）{% if information_subject > 0 %} {{ information_subject }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">分野科目 {% if field_subject > 0 %} {{ field_subject }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">学科共通科目（リメディアル） {% if remedial_subject > 0 %} {{ remedial_subject }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">分野科目 {% if field_subject > 0 %} {{ field_subject }}{% else %}0{% endif %} 単位</div>
+                        </div>
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            自由科目  <span class="fw-bolder">{% if free_subject > 0 %}{{ free_subject }}{% else %}0{% endif %} </span>単位
+                            </button>
+                        </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+{% endblock %}
